@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* Dark mode is switched by  <html data-theme="dark">  (set by the toggle button, remembered in localStorage). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------- colours: one set per theme ---------- */
+:root {
+  --bg: #f6f5f2;
+  --surface: #ffffff;
+  --surface-2: #efede8;
+  --fg: #1c1917;
+  --muted: #78716c;
+  --line: #e4e1db;
+  --accent: #0f766e;
+  --accent-fg: #ffffff;
+  --accent-soft: #ccfbf1;
+  --danger: #b91c1c;
+  --danger-soft: #fee2e2;
+  --shadow: 0 1px 2px rgb(28 25 23 / 0.06), 0 4px 16px rgb(28 25 23 / 0.06);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0c0a09;
+  --surface: #1a1816;
+  --surface-2: #26231f;
+  --fg: #f5f4f1;
+  --muted: #a8a29e;
+  --line: #2e2a26;
+  --accent: #2dd4bf;
+  --accent-fg: #042f2e;
+  --accent-soft: #123b37;
+  --danger: #f87171;
+  --danger-soft: #3b1515;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --shadow-card: var(--shadow);
+  --font-sans: "Inter Variable", "Vazirmatn Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-fa: "Vazirmatn Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------- base ---------- */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* 16px inputs stop iPhones from zooming the page when a field is focused */
+input, textarea, select { font-size: 16px; }
+
+/* Farsi text: its own font and a roomier line height */
+.fa {
+  font-family: var(--font-fa);
+  line-height: 1.9;
+  direction: rtl;
+  text-align: right;
+}
+
+::selection { background: var(--accent); color: var(--accent-fg); }
+
+/* ---------- components ---------- */
+@layer components {
+  .btn {
+    @apply inline-flex min-h-11 select-none items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold
+      transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60
+      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent;
+  }
+  .btn-primary { @apply bg-accent text-accent-fg hover:opacity-90; }
+  .btn-secondary { @apply border border-line bg-surface text-fg hover:bg-surface-2; }
+  .btn-danger { @apply bg-danger-soft text-danger hover:opacity-90; }
+  .icon-btn {
+    @apply inline-flex size-11 items-center justify-center rounded-xl text-fg transition hover:bg-surface-2
+      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent;
+  }
+  .input {
+    @apply w-full rounded-xl border border-line bg-surface px-3.5 py-3 text-fg placeholder:text-muted/70
+      transition focus:border-accent focus:outline-none focus:ring-3 focus:ring-accent/25;
+  }
+  .input[aria-invalid="true"] { @apply border-danger focus:ring-danger/25; }
+  .card { @apply rounded-2xl border border-line bg-surface shadow-card; }
+  .label { @apply mb-1.5 flex items-baseline justify-between gap-3 text-sm font-medium; }
+  .hint { @apply mt-1.5 text-xs text-muted; }
+  .field-error { @apply mt-1.5 text-sm text-danger; }
+}
+
+/* ---------- dialogs: centred on desktop, a bottom sheet on phones ---------- */
+dialog.sheet {
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 0;
+  width: min(28rem, calc(100vw - 2rem));
+  box-shadow: var(--shadow);
+}
+dialog.sheet::backdrop { background: rgb(0 0 0 / 0.55); backdrop-filter: blur(2px); }
+@media (max-width: 639px) {
+  dialog.sheet {
+    margin: auto 0 0 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 1.25rem 1.25rem 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+dialog.lightbox {
+  background: transparent; border: 0; padding: 0; margin: 0; width: 100vw; height: 100dvh;
+  max-width: 100vw; max-height: 100dvh; color: white;
+}
+dialog.lightbox::backdrop { background: rgb(0 0 0 / 0.92); }
+
+/* hide the scrollbar on swipe galleries */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
