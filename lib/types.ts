@@ -26,6 +26,8 @@ export type ProductPatch = {
   description?: string;
   descriptionFa?: string;
   price?: number;
+  /** Remove the product's price. (The backend wants `price: true` for this - see updateProduct.) */
+  removePrice?: boolean;
   addImages?: string[];
   removeImages?: string[];
 };

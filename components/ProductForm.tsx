@@ -77,9 +77,6 @@ export function ProductForm({ product }: { product?: Product }) {
     if (!nameFa.trim()) next.nameFa = "Enter the Farsi name.";
     const price = parsePrice(priceText);
     if (!price.ok) next.price = "Enter a number, or leave it empty.";
-    else if (product && product.price !== null && price.value === null) {
-      next.price = "A price can't be removed once it is set. Enter a new price.";
-    }
     return { next, price };
   }
 
@@ -108,6 +105,7 @@ export function ProductForm({ product }: { product?: Product }) {
       if (description.trim() !== product.description) changes.description = description.trim();
       if (descriptionFa.trim() !== product.descriptionFa) changes.descriptionFa = descriptionFa.trim();
       if (price.value !== null && price.value !== product.price) changes.price = price.value;
+      if (price.value === null && product.price !== null) changes.removePrice = true;   // field emptied -> remove the price
       if (Object.keys(changes).length === 0 && removed.length === 0 && newPhotos.length === 0) {
         cancel();
         return;
@@ -218,7 +216,13 @@ export function ProductForm({ product }: { product?: Product }) {
               placeholder="e.g. 1,200,000"
               autoComplete="off"
             />
-            {errors.price ? <p className="field-error">{errors.price}</p> : <p className="hint">Leave empty if the product has no price.</p>}
+            {errors.price ? (
+              <p className="field-error">{errors.price}</p>
+            ) : (
+              <p className="hint">
+                {product && product.price !== null ? "Empty this field to remove the price." : "Leave empty if the product has no price."}
+              </p>
+            )}
           </div>
         </section>
 

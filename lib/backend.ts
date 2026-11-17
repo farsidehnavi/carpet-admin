@@ -150,6 +150,7 @@ export async function updateProduct(id: string, patch: ProductPatch): Promise<bo
   if (patch.description !== undefined) fields.description = patch.description;
   if (patch.descriptionFa !== undefined) fields[config.descriptionFaField] = patch.descriptionFa;
   if (patch.price !== undefined) fields.price = patch.price;
+  if (patch.removePrice) fields.price = true;                    // the backend removes the price when it receives `true`
   if (Object.keys(fields).length > 0) await write("POST", "/product/add", { id, ...fields });
 
   const addImages = patch.addImages ?? [];
@@ -177,6 +178,7 @@ export async function updateProduct(id: string, patch: ProductPatch): Promise<bo
       (patch.description === undefined || now.description === patch.description) &&
       (patch.descriptionFa === undefined || now.descriptionFa === patch.descriptionFa) &&
       (patch.price === undefined || now.price === patch.price) &&
+      (!patch.removePrice || now.price === null) &&
       addImages.every((name) => now.images.includes(name)) &&
       removeImages.every((name) => !now.images.includes(name))
     );

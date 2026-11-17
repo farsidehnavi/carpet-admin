@@ -15,7 +15,7 @@ npm run build && npm run start      # http://localhost:3100  (change with PORT=4
 ## Notes
 - The browser only talks to this site. This site's server talks to your API and image server, so no CORS setup is needed.
 - Put it behind https (nginx/Caddy) when it is on the internet.
+- Removing a price: the site sends `price: true` in the update (your backend's convention).
 - Backend needs: `GET /product/all`, `POST /product/add` (create/update), `DELETE /product/delete/:id`,
   `POST /product/img/`, `DELETE /product/img/:id/:file`, `DELETE /img/delete/:file`, `POST <image server>/upload/`,
   and the product fields `name_fa` and `description_fa` (names are configurable in `.env.local`).
-# carpet-admin

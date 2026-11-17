@@ -85,6 +85,12 @@ export function parsePatch(body: unknown): Result<ProductPatch> {
     patch.price = price.value;
   }
 
+  if (body.removePrice !== undefined) {
+    if (body.removePrice !== true) return { ok: false, error: "Invalid request." };
+    if (patch.price !== undefined) return { ok: false, error: "Send either a new price or removePrice, not both." };
+    patch.removePrice = true;
+  }
+
   const addImages = readNames(body.addImages);
   const removeImages = readNames(body.removeImages);
   if (!addImages || !removeImages) return { ok: false, error: "Invalid photo list." };
